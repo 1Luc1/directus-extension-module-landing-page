@@ -24,6 +24,21 @@ const props = defineProps({
   },
 });
 
+const locals = {
+  de: {
+    info: "Info",
+    "add-person": "Person hinzufügen",
+    "add-ensemble": "Ensemble hinzufügen",
+    contact: "Kontakt",
+  },
+  en: {
+    info: "Info",
+    "add-person": "Add Person",
+    "add-ensemble": "Add Ensemble",
+    contact: "Contact",
+  },
+};
+
 const api = useApi();
 const page_title = ref("");
 const page_body = ref("");
@@ -31,7 +46,6 @@ const current_language = ref("");
 const all_pages = ref([]);
 
 render_page(props.page);
-fetch_all_pages();
 
 watch(
   () => props.page,
@@ -46,7 +60,7 @@ async function render_page(page) {
     page_body.value = "";
   } else {
     await fetch_language();
-
+    fetch_all_pages();
     var response;
     try {
       const rsp = await fetch(
@@ -67,10 +81,21 @@ async function render_page(page) {
   }
 }
 
+function t(key) {
+  const currentLocal = current_language.value.substring(0, 2);
+  if (locals.hasOwnProperty(currentLocal)) {
+    return locals[currentLocal][key];
+  }
+  return key;
+}
+
 function fetch_all_pages() {
+  console.log(current_language.value.substring(0, 2));
+
+  console.log("add-person: ", t("add-person"));
   all_pages.value = [
     {
-      label: "Info",
+      label: t("info"),
       uri: "info",
       to: "/landing-page",
       icon: "info",
@@ -78,14 +103,14 @@ function fetch_all_pages() {
     },
     { type: "divider", inset: true },
     {
-      label: "Person hinzufügen",
+      label: t("add-person"),
       uri: "add-person",
       to: "/content/persons/+",
       icon: "person_add",
       color: "#2ECDA7",
     },
     {
-      label: "Ensemble hinzufügen",
+      label: t("add-ensemble"),
       uri: "add-ensemble",
       to: "/content/ensembles/+",
       icon: "group_add",
@@ -93,7 +118,7 @@ function fetch_all_pages() {
     },
     { type: "divider", inset: true },
     {
-      label: "Kontakt",
+      label: t("contact"),
       uri: "contact",
       to: "/landing-page/contact",
       icon: "contact_support",
@@ -109,6 +134,11 @@ async function fetch_language() {
   } else {
     const setting = await api.get("/settings");
     current_language.value = setting.data.data.default_language;
+  }
+  // set fallback language to en
+  const currentLocal = current_language.value.substring(0, 2);
+  if (!locals.hasOwnProperty(currentLocal)) {
+    current_language.value = "en";
   }
 }
 </script>
