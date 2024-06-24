@@ -27,14 +27,14 @@ const props = defineProps({
 const locals = {
   de: {
     info: "Info",
-    "add-person": "Person hinzufügen",
-    "add-ensemble": "Ensemble hinzufügen",
+    "add-person": "Künstler:in hinzufügen",
+    "add-ensemble": "Ensemble/Verein hinzufügen",
     contact: "Kontakt",
   },
   en: {
     info: "Info",
-    "add-person": "Add Person",
-    "add-ensemble": "Add Ensemble",
+    "add-person": "Add Artist",
+    "add-ensemble": "Add Ensemble/Club",
     contact: "Contact",
   },
 };
@@ -90,9 +90,6 @@ function t(key) {
 }
 
 function fetch_all_pages() {
-  console.log(current_language.value.substring(0, 2));
-
-  console.log("add-person: ", t("add-person"));
   all_pages.value = [
     {
       label: t("info"),
